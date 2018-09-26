@@ -1,0 +1,52 @@
+body {
+  background: black !important;
+}
+
+input[type="text"] {
+  border: 1px solid gray;
+}
+
+.page {
+  position: relative;
+  text-align: center;
+  padding-top: 40px;
+  padding-bottom: 40px;
+}
+
+.button {
+  padding: 0;
+  border: none;
+  background: none;
+  cursor: pointer;
+}
+
+.champions {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.champions__item {
+  display: inline-flex;
+  margin: 10px;
+  padding: 10px;
+  cursor: pointer;
+}
+
+.champion {
+  position: relative;
+}
+
+.champion__name {
+  position: absolute;
+  right: 0;
+  bottom: 10;
+  left: 0;
+  z-index: 100;
+  margin: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  color: #fff;
+  text-align: center;
+  font-size: 16px;
+  pointer-events: none;
+}
