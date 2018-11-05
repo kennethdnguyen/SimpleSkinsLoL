@@ -12,17 +12,50 @@ class Champions extends Component {
   constructor() {
     super();
     this.state = {
-      search: ""
+      search: "",
+      currentVersion: "",
+      championList: {}
     };
   }
 
   handleSearch(event) {
     this.setState({ search: event.target.value });
   }
+
+  componentDidMount() {
+    var url = "https://ddragon.leagueoflegends.com/api/versions.json";
+
+    var result = fetch(url, {
+      method: "get"
+    })
+      .then(blob => {
+        return blob.json(); // pass the data as promise to next then block
+      })
+      .then(data => {
+        var latestVer = data[0];
+        this.setState({ currentVersion: data[0] });
+
+        return fetch(
+          `http://ddragon.leagueoflegends.com/cdn/${latestVer}/data/en_US/champion.json`
+        ); // make a 2nd request and return a promise
+      })
+      .then(blob => {
+        return blob.json();
+      })
+      .catch(error => {
+        console.log("Request failed", error);
+      });
+
+    result.then(data => {
+      this.setState({ championList: data.data }); // 2nd request result
+    });
+  }
+
   render() {
     const championData = championFull.data;
     const championNames = Object.keys(championData);
 
+    console.log(this.state.currentVersion, this.state.championList);
     let filteredChampions = championNames.filter(champion => {
       return (
         champion.toLowerCase().indexOf(this.state.search.toLowerCase()) !== -1
@@ -53,35 +86,32 @@ class Champions extends Component {
   }
 }
 
-class Champion extends Component {
-  render() {
-    const { name, totalSkins } = this.props;
-    const skinNumbers = [];
+const Champion = ({ name, totalSkins }) => {
+  const skinNumbers = [];
 
-    for (let i = 0; i < totalSkins.length; i++) {
-      skinNumbers.push(totalSkins[i].num);
-    }
-
-    return (
-      <div className="champion">
-        <Link
-          to={{
-            pathname: "/splashArts",
-            state: {
-              skinArr: skinNumbers,
-              names: name
-            }
-          }}
-        >
-          <button type="button" className="button">
-            <img src={require(`./championIcons/${name}.png`)} alt={name} />
-          </button>
-        </Link>
-        <p className="champion__name">{name}</p>
-      </div>
-    );
+  for (let i = 0; i < totalSkins.length; i++) {
+    skinNumbers.push(totalSkins[i].num);
   }
-}
+
+  return (
+    <div className="champion">
+      <Link
+        to={{
+          pathname: "/splashArts",
+          state: {
+            skinArr: skinNumbers,
+            names: name
+          }
+        }}
+      >
+        <button type="button" className="button">
+          <img src={require(`./championIcons/${name}.png`)} alt={name} />
+        </button>
+      </Link>
+      <p className="champion__name">{name}</p>
+    </div>
+  );
+};
 
 ReactDOM.render(
   <HashRouter>
