@@ -55,7 +55,6 @@ class Champions extends Component {
     const championData = championFull.data;
     const championNames = Object.keys(championData);
 
-    console.log(this.state.currentVersion, this.state.championList);
     let filteredChampions = championNames.filter(champion => {
       return (
         champion.toLowerCase().indexOf(this.state.search.toLowerCase()) !== -1
