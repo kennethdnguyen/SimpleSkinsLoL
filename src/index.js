@@ -1,7 +1,6 @@
 import ReactDOM from "react-dom";
 import registerServiceWorker from "./registerServiceWorker";
 import React, { Component } from "react";
-import championFull from "./data/championFull.json";
 import "./index.css";
 import { Link } from "react-router-dom";
 import SplashArts from "./SplashArts";
@@ -52,8 +51,7 @@ class Champions extends Component {
   }
 
   render() {
-    const championData = championFull.data;
-    const championNames = Object.keys(championData);
+    const championNames = Object.keys(this.state.championList);
 
     let filteredChampions = championNames.filter(champion => {
       return (
@@ -64,7 +62,7 @@ class Champions extends Component {
     let champions = filteredChampions.map((champion, index) => {
       return (
         <li className="champions__item" key={index}>
-          <Champion name={champion} totalSkins={championData[champion].skins} />
+          <Champion name={champion} version={this.state.currentVersion} />
         </li>
       );
     });
@@ -85,26 +83,23 @@ class Champions extends Component {
   }
 }
 
-const Champion = ({ name, totalSkins }) => {
-  const skinNumbers = [];
-
-  for (let i = 0; i < totalSkins.length; i++) {
-    skinNumbers.push(totalSkins[i].num);
-  }
-
+const Champion = ({ name, version }) => {
   return (
     <div className="champion">
       <Link
         to={{
           pathname: "/splashArts",
           state: {
-            skinArr: skinNumbers,
-            names: name
+            name: name,
+            curVersion: version
           }
         }}
       >
         <button type="button" className="button">
-          <img src={require(`./championIcons/${name}.png`)} alt={name} />
+          <img
+            src={`http://ddragon.leagueoflegends.com/cdn/${version}/img/champion/${name}.png`}
+            alt={name}
+          />
         </button>
       </Link>
       <p className="champion__name">{name}</p>
